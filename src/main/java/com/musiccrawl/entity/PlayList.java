@@ -6,11 +6,11 @@ package com.musiccrawl.entity;
  */
 public class PlayList {
 
-    private Integer id;
-    private String title;
-    private String imgUrl;
-    private String url;
-    private String count;
+    private Integer id;     //id  目前还没有什么用
+    private String title;  //    歌单标题
+    private String imgUrl; //    歌单图片地址
+    private String url;    //    歌单地址
+    private String count;  //    歌单播放次数
 
     public Integer getId() {
         return id;
