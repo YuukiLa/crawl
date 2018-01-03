@@ -10,9 +10,6 @@ import com.musiccrawl.entity.Song;
 import com.musiccrawl.util.WYYEncryptUtil;
 import com.musiccrawl.util.XiamiDecodeUtil;
 import net.dongliu.requests.Requests;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.junit.Test;
 
 import java.net.URLDecoder;
@@ -51,7 +48,7 @@ public class TestCrawl {
     @Test
     public void testGetPlayListAll() {
         WangyiyunCrawl crawl = new WangyiyunCrawl();
-        List<PlayList> playList = crawl.getPlayList("http://music.163.com/discover/playlist/?cat=%E6%97%A5%E8%AF%AD");
+        List<PlayList> playList = (List<PlayList>) crawl.getPlayList("http://music.163.com/discover/playlist/?cat=%E6%97%A5%E8%AF%AD");
         playList.stream().forEach(playList1 -> System.out.println(playList1));
     }
 
@@ -111,26 +108,44 @@ public class TestCrawl {
     public void testXMPlayListGet() {
         String url = "http://www.xiami.com/search/orinew?spm=a1z1s.3061701.6856305.6.9M9LaS&order=favorites&l=0";
         XiamiCrawl xm = new XiamiCrawl();
-        xm.getPlayList(url).forEach(playList -> System.out.println(playList));
+//        xm.getPlayList(url).forEach(playList -> System.out.println(playList));
 
     }
-
+    // 虾米音乐歌单内容爬取
+    @Test
+    public void testXMplayListContent() throws Exception {
+        String url = "http://www.xiami.com/collect/9399100";
+        XiamiCrawl xm = new XiamiCrawl();
+        List<Song> songs = xm.getSongs(url);
+        songs.stream().forEach(song -> System.out.println(song));
+       // xm.getSongMsg("http://www.xiami.com/song/mQ7nE683e2f");
+    }
 
     // 以下是QQ音乐的测试
     @Test
     public void TestQQmusic() {
-        String jsonUrl = "https://c.y.qq.com/v8/fcg-bin/fcg_play_single_song.fcg?songmid=000UurX744Ro8M&tpl=yqq_song_detail&format=jsonp&callback=getOneSongInfoCallback&g_tk=5381&jsonpCallback=getOneSongInfoCallback&lo=ginUin0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0";
-        String jsonResult = Requests.get(jsonUrl).send().readToText().replace("getOneSongInfoCallback(", "").replace(")", "");
-        System.out.println(jsonResult);
-        JSONObject jsonObject = JSONObject.parseObject(jsonResult);
-        System.out.println(jsonObject.getJSONObject("url").entrySet().iterator().next().getValue());
+//        String jsonUrl = "https://c.y.qq.com/v8/fcg-bin/fcg_play_single_song.fcg?songmid=000UurX744Ro8M&tpl=yqq_song_detail&format=jsonp&callback=getOneSongInfoCallback&g_tk=5381&jsonpCallback=getOneSongInfoCallback&lo=ginUin0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0";
+//        String jsonResult = Requests.get(jsonUrl).send().readToText().replace("getOneSongInfoCallback(", "").replace(")", "");
+//        System.out.println(jsonResult);
+//        JSONObject jsonObject = JSONObject.parseObject(jsonResult);
+//        System.out.println(jsonObject.getJSONObject("url").entrySet().iterator().next().getValue());
+        QQCrawl qq = new QQCrawl();
+        qq.getSongUrl("000g2tfy393dPj");
     }
 
     @Test
     public void TestQQmusicPlayList() {
         String url = "https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg";
         QQCrawl qq = new QQCrawl();
-        qq.getPlayList(url, 0).forEach(playList -> System.out.println(playList));
+        List list = (List) qq.getPlayList(url, 0).get("playList");
+        list .forEach(playList -> System.out.println(playList));
     }
 
+
+    @Test
+    public void testQQplayListContnet(){
+        String url = "https://y.qq.com/n/yqq/playlist/3607386766.html";
+        QQCrawl qq = new QQCrawl();
+        qq.getSongs(url);
+    }
 }

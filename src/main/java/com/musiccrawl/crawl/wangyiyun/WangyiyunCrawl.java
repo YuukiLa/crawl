@@ -9,6 +9,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.musiccrawl.crawl.DefaultCrawl;
 import com.musiccrawl.entity.PlayList;
 import com.musiccrawl.entity.Song;
+import com.musiccrawl.myexception.FailedCrawlResultException;
 import com.musiccrawl.util.WYYEncryptUtil;
 import net.dongliu.requests.Requests;
 import org.jsoup.Jsoup;
@@ -35,7 +36,8 @@ public class WangyiyunCrawl extends DefaultCrawl {
     private static final String PLAYLISTURL = "http://music.163.com/weapi/v3/playlist/detail";
     private static final String SONGURL = "http://music.163.com/weapi/song/enhance/player/url?csrf_token=";
     //获取歌单列表
-    public List<PlayList> getPlayList(String url) {
+    public Map<String,Object> getPlayList(String url) {
+        Map<String,Object> resultMap = new HashMap<>();
         try {
             String result = getContentByUrl(url);
             Document document = Jsoup.parse(result);
@@ -53,10 +55,15 @@ public class WangyiyunCrawl extends DefaultCrawl {
                 play.setCount(select.text());
                 list.add(play);
             }
-            return list;
+            resultMap.put("playLiset",list);
+            // 抓取下一页地址
+            elements = document.select(".u-page .znxt");
+            String nextUrl = elements.first().absUrl("href");
+            resultMap.put("nextUrl",nextUrl);
+            return resultMap;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new FailedCrawlResultException("未抓取到数据");
         }
     }
 

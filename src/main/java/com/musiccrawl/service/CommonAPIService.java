@@ -3,6 +3,7 @@ package com.musiccrawl.service;
 import com.musiccrawl.entity.PlayList;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/10/23.
@@ -15,7 +16,7 @@ public interface CommonAPIService {
     final int QQ_CODE = 3;
 
     //
-    List<PlayList> getPlayList(int code);
+    Map<String,Object> getPlayList(int code,String nextUrl);
     // 获取所有的歌单
     List<PlayList>  getAllPlayList();
 }

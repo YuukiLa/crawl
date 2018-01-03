@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/10/23.
@@ -20,17 +21,21 @@ public class CommonAPIServiceImpl implements CommonAPIService{
     /**
      * 根据code返回相应的歌单
      * @param code 1 网易云 ，2 虾米 ， 3 QQ音乐
+     * @param nextUrl 下一页地址
      * @return
      */
     @Override
-    public List<PlayList> getPlayList(int code) {
+    public Map<String,Object>  getPlayList(int code,String nextUrl) {
         switch (code){
             case WYY_CODE:
-                return getWYYPlayList();
+                nextUrl = nextUrl.equals("") ? ICrawl.WYY_PLAYLIST_BASEUTL:nextUrl;
+                return getWYYPlayList(nextUrl);
             case XM_CODE:
-                return getXMPlayList();
+                nextUrl = nextUrl.equals("") ? ICrawl.XM_PLAYLIST_BASEURL:nextUrl;
+                return getXMPlayList(nextUrl);
             case QQ_CODE:
-                return getQQPlayList();
+                nextUrl = nextUrl.equals("") ? 0+"":nextUrl;
+                return getQQPlayList(nextUrl);
             default:
                 return null;
         }
@@ -39,20 +44,20 @@ public class CommonAPIServiceImpl implements CommonAPIService{
     @Override
     public List<PlayList> getAllPlayList() {
         List<PlayList> allList = new ArrayList<>();
-        allList.addAll(getWYYPlayList());
-        allList.addAll(getXMPlayList());
-        allList.addAll(getQQPlayList());
+//        allList.addAll(getWYYPlayList());
+//        allList.addAll(getXMPlayList());
+//        allList.addAll(getQQPlayList());
         return allList;
     }
 
 
-    private List<PlayList> getWYYPlayList(){
-       return new WangyiyunCrawl().getPlayList(ICrawl.WYY_PLAYLIST_BASEUTL);
+    private Map<String,Object> getWYYPlayList(String nextUrl){
+       return new WangyiyunCrawl().getPlayList(nextUrl);
     }
-    private List<PlayList> getXMPlayList(){
-        return new XiamiCrawl().getPlayList(ICrawl.XM_PLAYLIST_BASEURL);
+    private Map<String,Object> getXMPlayList(String nextUrl){
+        return new XiamiCrawl().getPlayList(nextUrl);
     }
-    private List<PlayList> getQQPlayList(){
-        return new QQCrawl().getPlayList(ICrawl.QQ_PLAYLIST_BASEURL,0);
+    private Map<String,Object> getQQPlayList(String nextUrl){
+        return new QQCrawl().getPlayList(ICrawl.QQ_PLAYLIST_BASEURL,Integer.parseInt(nextUrl));
     }
 }
