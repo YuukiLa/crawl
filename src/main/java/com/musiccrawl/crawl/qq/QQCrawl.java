@@ -68,15 +68,14 @@ public class QQCrawl extends DefaultCrawl{
         param.put("utf8","1");
         String result = Requests.get(PLAY_LIST_URL).headers(initHeader()).params(param).send().readToText();
         result = result.replace("playlistinfoCallback(","").replace(")","");
-        System.out.println(result);
         JSONObject jsonObject = JSONObject.parseObject(result);
         JSONArray list = jsonObject.getJSONArray("cdlist").getJSONObject(0).getJSONArray("songlist");
-        System.out.println(list.size());
         for(int i=0 ;i<list.size();i++){
             JSONObject object = list.getJSONObject(i);
             Song song = new Song();
             song.setName(object.getString("songname"));
             song.setUrl(getSongUrl(object.getString("songmid")));
+            songs.add(song);
         }
         return songs;
     }

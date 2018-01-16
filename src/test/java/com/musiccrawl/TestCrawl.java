@@ -130,7 +130,7 @@ public class TestCrawl {
 //        JSONObject jsonObject = JSONObject.parseObject(jsonResult);
 //        System.out.println(jsonObject.getJSONObject("url").entrySet().iterator().next().getValue());
         QQCrawl qq = new QQCrawl();
-        qq.getSongUrl("000g2tfy393dPj");
+        System.out.println(qq.getSongUrl("004RUiXu49ufy1"));
     }
 
     @Test

@@ -19,4 +19,6 @@ public interface CommonAPIService {
     Map<String,Object> getPlayList(int code,String nextUrl);
     // 获取所有的歌单
     List<PlayList>  getAllPlayList();
+
+    Map<String,Object> getSongList(int code ,String url);
 }

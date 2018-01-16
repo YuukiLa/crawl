@@ -6,10 +6,7 @@ import com.musiccrawl.service.CommonAPIService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +39,20 @@ public class CommonAPIController {
         return new ResponseModel<List<PlayList>> (ResponseModel.SUCCESS_CODE,commonAPIService.getAllPlayList());
     }
 
+
+    // 根据url 获取歌单歌曲
+    @GetMapping("/getSongs")
+    public ResponseModel getSongList(@RequestParam String url,@RequestParam(value = "code",required = false) int code){
+       return new ResponseModel<Map<String,Object>> (ResponseModel.SUCCESS_CODE,commonAPIService.getSongList(code,url));
+    }
+
+
+
+    @PostMapping("/test")
+    public String test(@RequestBody String name,@RequestParam(value = "psw",required = false)String psw){
+        logger.debug(name+"11111111111"+psw);
+        return "ssssssss";
+    }
 
 
 }
