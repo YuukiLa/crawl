@@ -114,7 +114,7 @@ public class TestCrawl {
     // 虾米音乐歌单内容爬取
     @Test
     public void testXMplayListContent() throws Exception {
-        String url = "http://www.xiami.com/collect/9399100";
+        String url = "http://www.xiami.com/collect/178571247";
         XiamiCrawl xm = new XiamiCrawl();
         List<Song> songs = xm.getSongs(url);
         songs.stream().forEach(song -> System.out.println(song));

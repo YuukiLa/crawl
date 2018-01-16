@@ -42,6 +42,7 @@ public class QQCrawl extends DefaultCrawl{
         for(int i=0 ;i<list.size();i++){
             JSONObject object = list.getJSONObject(i);
             PlayList playList = new PlayList();
+            playList.setId(object.getString("dissid"));
             playList.setImgUrl(object.getString("imgurl"));
             playList.setTitle(object.getString("dissname"));
             playList.setUrl(BASE_URL+object.getString("dissid")+".html");

@@ -55,7 +55,7 @@ public class WangyiyunCrawl extends DefaultCrawl {
                 play.setCount(select.text());
                 list.add(play);
             }
-            resultMap.put("playLiset",list);
+            resultMap.put("playList",list);
             // 抓取下一页地址
             elements = document.select(".u-page .znxt");
             String nextUrl = elements.first().absUrl("href");

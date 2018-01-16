@@ -6,17 +6,17 @@ package com.musiccrawl.entity;
  */
 public class PlayList {
 
-    private Integer id;     //id  目前还没有什么用
+    private String id;     //id  目前还没有什么用
     private String title;  //    歌单标题
     private String imgUrl; //    歌单图片地址
     private String url;    //    歌单地址
     private String count;  //    歌单播放次数
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

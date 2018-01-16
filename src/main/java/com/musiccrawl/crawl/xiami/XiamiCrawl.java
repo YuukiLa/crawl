@@ -6,6 +6,7 @@ import com.musiccrawl.entity.Song;
 import com.musiccrawl.myexception.FailedCrawlResultException;
 import com.musiccrawl.util.XiamiDecodeUtil;
 import net.dongliu.requests.Requests;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 import org.jsoup.Jsoup;
@@ -66,10 +67,14 @@ public class XiamiCrawl extends DefaultCrawl{
             for (Element e: elements) {
                 Song song = new Song();
                 Element select = e.select(".Qsong_item .s_info").first();
+                Map<String ,String > mMap = getSongMsg(select.getElementsByClass("song_name").first().child(0).absUrl("href"));
+                try {
+                    song.setUrl(mMap.get("songUrl"));
+                }catch (NullPointerException ee){
+                    continue;
+                }
                 song.setImgUrl(null);
                 song.setName(select.getElementsByClass("song_name").first().child(0).attr("title"));
-                Map<String ,String > mMap = getSongMsg(select.getElementsByClass("song_name").first().child(0).absUrl("href"));
-                song.setUrl(mMap.get("songUrl"));
                 song.setImgUrl(mMap.get("imgUrl"));
                 songs.add(song);
             }
@@ -92,19 +97,24 @@ public class XiamiCrawl extends DefaultCrawl{
         songId = songId.split("'")[1];
         String requestUrl = SONG_MSG_URL+songId;
         String read = Requests.get(requestUrl).send().readToText();
-        org.dom4j.Document doc = DocumentHelper.parseText(read);
-        org.dom4j.Element rootElement = doc.getRootElement();
-        Node track = rootElement.selectSingleNode("track");
-        Node node = track.selectSingleNode("album_cover");
-        String imgUrl = node.getText();
-        mMap.put("imgUrl",imgUrl);
-        node = track.selectSingleNode("location");
-        String songCode = node.getText();
-        String deURL = XiamiDecodeUtil.decode(songCode);
-        String finallyURL = URLDecoder.decode(deURL, "utf-8");
-        String songUrl = finallyURL.replace("^", "0");
-        mMap.put("songUrl",songUrl);
-        return mMap;
+        org.dom4j.Document doc;
+        try{
+            doc = DocumentHelper.parseText(read);
+            org.dom4j.Element rootElement = doc.getRootElement();
+            Node track = rootElement.selectSingleNode("track");
+            Node node = track.selectSingleNode("album_cover");
+            String imgUrl = node.getText();
+            mMap.put("imgUrl",imgUrl);
+            node = track.selectSingleNode("location");
+            String songCode = node.getText();
+            String deURL = XiamiDecodeUtil.decode(songCode);
+            String finallyURL = URLDecoder.decode(deURL, "utf-8");
+            String songUrl = finallyURL.replace("^", "0");
+            mMap.put("songUrl",songUrl);
+            return mMap;
+        }catch (DocumentException e){
+            return null;
+        }
     }
 
 }
