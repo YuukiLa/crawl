@@ -1,5 +1,7 @@
 package com.musiccrawl.controller;
 
+import com.musiccrawl.crawl.wangyiyun.WangyiyunCrawl;
+import com.musiccrawl.repository.PlayListRepository;
 import com.musiccrawl.entity.PlayList;
 import com.musiccrawl.model.ResponseModel;
 import com.musiccrawl.service.CommonAPIService;
@@ -8,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +25,8 @@ public class CommonAPIController {
     @Autowired
     private CommonAPIService commonAPIService;
 
+    @Autowired
+    private PlayListRepository playListRepository;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -49,8 +54,10 @@ public class CommonAPIController {
 
 
     @PostMapping("/test")
-    public String test(@RequestBody String name,@RequestParam(value = "psw",required = false)String psw){
-        logger.debug(name+"11111111111"+psw);
+    public String test(){
+        if (playListRepository!=null){
+            logger.debug("not null");
+        }
         return "ssssssss";
     }
 

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>layout 后台大布局 - Layui</title>
+  <link rel="stylesheet" href="assets/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo">Yuuki Music 管理后台</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+          贤心
+        </a>
+      </li>
+      <li class="layui-nav-item"><a href="">退出</a></li>
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">歌单管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">网易云</a></dd>
+            <dd><a href="javascript:;">虾米音乐</a></dd>
+            <dd><a href="javascript:;">QQ音乐</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">用户管理</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">重新获取歌单</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">log</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+        <span class="layui-breadcrumb">
+            <a href="javascript:;">首页</a>
+            <a href="javascript:;">重置歌单数据</a>
+        </span>
+        <br><br>
+        <hr>
+        <br>
+        <span style="font-size: 18px">三思再点!</span><i class="layui-icon" style="font-size: 20px">&#xe61a;</i> 
+        <br><br>
+        <button class="layui-btn layui-btn-normal" id='reset'>重置</button>
+    </div>
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © YuukiMusic.com
+  </div>
+</div>
+<!-- <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script> -->
+<script src="assets/layui.js"></script>
+<script>
+//JavaScript代码区域
+layui.use(['element','layer'], function(){
+  var element = layui.element;
+  var layer = layui.layer;
+  var $ = layui.jquery;
+  $('#reset').click(function(){
+    layer.prompt({
+        formType: 1,
+        value: '',
+        title: '密码验证'},
+        function (value, index, elem) {
+            console.log(value)
+            layer.close(index);
+        }
+    ) 
+  })
+  
+});
+</script>
+</body>
+</html>

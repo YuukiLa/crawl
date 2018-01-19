@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>layout 后台大布局 - Layui</title>
+  <link rel="stylesheet" href="assets/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo">Yuuki Music 管理后台</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+          贤心
+        </a>
+      </li>
+      <li class="layui-nav-item"><a href="">退出</a></li>
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">歌单管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">网易云</a></dd>
+            <dd><a href="javascript:;">虾米音乐</a></dd>
+            <dd><a href="javascript:;">QQ音乐</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">用户管理</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">重新获取歌单</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">log</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+        <span class="layui-breadcrumb">
+            <a href="javascript:;">首页</a>
+            <a href="javascript:;">用户管理</a>
+        </span>
+        <br><br>
+        <hr>
+        <br>
+        <div class="layui-tab" lay-filter="test1">
+            <ul class="layui-tab-title">
+                <li lay-id='222' class="layui-this">用户列表</li>
+                <li lay-id='333'>用户管理</li>
+                <li lay-id='444'>已封禁</li>
+            </ul>
+           
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="150">
+                            <col width="150">
+                            <col width="200">
+                            <col>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>昵称</th>
+                                <th>加入时间</th>
+                                <th>状态</th>
+                            </tr> 
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>sss</td>
+                                <td>sss</td>
+                                <td>sss</td>
+                                <td>sss</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id='pager1'></div>
+                </div>
+                <div class="layui-tab-item">
+                <div class="layui-form" style="float:right">
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <input type="text" id="name" name="name" required  lay-verify="required" placeholder="search" autocomplete="off" class="layui-input" width="200px">
+                                        </td>
+                                        <td>
+                                            &nbsp;<button class="layui-btn layui-btn-radius layui-btn-normal" >搜索</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="150">
+                            <col width="150">
+                            <col width="200">
+                            <col width="200">
+                            <col>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>昵称</th>
+                                <th>加入时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr> 
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ss</td>
+                                <td>ss</td>
+                                <td>ss</td>
+                                <td>ss</td>
+                                <td>ss</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id='pager2'></div>
+                </div>
+                <div class="layui-tab-item">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="150">
+                            <col width="150">
+                            <col width="200">
+                            <col>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>昵称</th>
+                                <th>加入时间</th>
+                                <th>状态</th>
+                            </tr> 
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ss</td>
+                                <td>ss</td>
+                                <td>ss</td>
+                                <td>ss</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id='pager3'></div>
+            </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © YuukiMusic.com
+  </div>
+</div>
+<!-- <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script> -->
+<script src="assets/layui.js"></script>
+<script src="assets/myjs/util.js"></script>
+<script>
+//JavaScript代码区域
+layui.use(['element','layer',"form",'laypage'], function(){
+  var element = layui.element;
+  var layer = layui.layer;
+  var form = layui.form;
+  var laypage = layui.laypage;
+  var $ = layui.jquery;
+  
+  
+
+
+ var layid = window.localStorage.getItem("lay-id");
+ element.tabChange('test1', layid); //假设当前地址为：http://a.com#test1=222，那么选项卡会自动切换到“发送消息”这一项
+  //监听Tab切换，以改变地址hash值
+  element.on('tab(test1)', function(){
+    window.localStorage.setItem("lay-id",this.getAttribute('lay-id'))
+  });
+ 
+  //执行一个laypage实例
+  laypage.render({
+    elem: 'pager3', //注意，这里的 pager 是 ID，不用加 # 号
+    count: 50, //数据总数，从服务端得到
+    jump:function(obj,first){
+        console.log(obj.curr)
+        console.log(first)
+       //ajax($,"http://www.baidu.com",{curr:obj.curr},function(data){},function(data){})
+    }
+  });
+  laypage.render({
+    elem: 'pager1', //注意，这里的 pager 是 ID，不用加 # 号
+    count: 50, //数据总数，从服务端得到
+    jump:function(obj,first){
+        console.log(obj.curr)
+        console.log(first)
+       //ajax($,"http://www.baidu.com",{curr:obj.curr},function(data){},function(data){})
+    }
+  });
+  laypage.render({
+    elem: 'pager2', //注意，这里的 pager 是 ID，不用加 # 号
+    count: 50, //数据总数，从服务端得到
+    jump:function(obj,first){
+        console.log(obj.curr)
+        console.log(first)
+       //ajax($,"http://www.baidu.com",{curr:obj.curr},function(data){},function(data){})
+    }
+  });
+  
+});
+</script>
+</body>
+</html>

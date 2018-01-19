@@ -27,6 +27,10 @@ import java.util.Map;
 public class XiamiCrawl extends DefaultCrawl{
 
     public Map<String,Object> getPlayList(String url) throws FailedCrawlResultException{
+        return getPlayList(url,1);
+    }
+
+    public Map<String,Object> getPlayList(String url,int type) throws FailedCrawlResultException{
         Map<String,Object> resultMap = new HashMap<>();
         try {
             String result = getContentByUrl(url);
@@ -41,6 +45,9 @@ public class XiamiCrawl extends DefaultCrawl{
                 play.setTitle(select.select("a").attr("title"));
                 play.setUrl(select.select("a").attr("href"));
                 play.setCount(e.select(".block_items .collect_action").first().text());
+                play.setPlatformCode(2);
+                play.setType(type);
+                play.setId(play.getUrl().split("collect/")[1]);
                 list.add(play);
             }
             resultMap.put("playList",list);
@@ -52,7 +59,7 @@ public class XiamiCrawl extends DefaultCrawl{
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FailedCrawlResultException("未抓取到数据");
+             throw new FailedCrawlResultException("未抓取到数据");
         }
     }
 

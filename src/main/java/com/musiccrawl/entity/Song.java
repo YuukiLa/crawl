@@ -1,16 +1,30 @@
 package com.musiccrawl.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * 歌曲实体
  * Created by Administrator on 2017/12/3.
  */
+@Entity
 public class Song {
 
+    @Id
     private String id;     // 歌曲id  mid什么的
     private String name;  // 歌曲名称
     private String url;   // 歌曲链接
     private String imgUrl;  // 图片地址 如果有的话
     private String lrcUrl;  // 歌词地址 如果有的话
+    private String singer; // 歌手
+
+    public String getSinger() {
+        return singer;
+    }
+
+    public void setSinger(String singer) {
+        this.singer = singer;
+    }
 
     public String getId() {
         return id;

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.musiccrawl.crawl.DefaultCrawl;
 import com.musiccrawl.entity.PlayList;
 import com.musiccrawl.entity.Song;
+import com.musiccrawl.myexception.FailedCrawlResultException;
 import net.dongliu.requests.Requests;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,32 +27,46 @@ public class QQCrawl extends DefaultCrawl{
 
     private final String BASE_URL = "https://y.qq.com/n/yqq/playlist/";
     private final String PLAY_LIST_URL = "https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg";
-
     public Map<String ,Object> getPlayList(String url,int curr){
-        Map<String,Object> resultMap = new HashMap<>();
-        List<PlayList> lists = new ArrayList<>();
-        Map<String, String> param = initParam();
-        param.put("sortId","5");
-        param.put("sin",curr+"");
-        param.put("ein",curr+29+"");
-        param.put("jsonpCallback","getPlaylist");
-        String result = Requests.get(url).headers(initHeader()).params(param).send().readToText();
-        result = result.replace("getPlaylist(","").replace(")","");
-        JSONObject jsonObject = JSONObject.parseObject(result);
-        JSONArray list = jsonObject.getJSONObject("data").getJSONArray("list");
-        for(int i=0 ;i<list.size();i++){
-            JSONObject object = list.getJSONObject(i);
-            PlayList playList = new PlayList();
-            playList.setId(object.getString("dissid"));
-            playList.setImgUrl(object.getString("imgurl"));
-            playList.setTitle(object.getString("dissname"));
-            playList.setUrl(BASE_URL+object.getString("dissid")+".html");
-            playList.setCount(object.getString("listennum"));
-            lists.add(playList);
+        return getPlayList(url,curr,10000000,3);
+    }
+
+    public Map<String ,Object> getPlayList(String url,int curr,int categoryId,int type){
+        try {
+            Map<String, Object> resultMap = new HashMap<>();
+            List<PlayList> lists = new ArrayList<>();
+            Map<String, String> param = initParam();
+            param.put("sortId", "5");
+            param.put("sin", curr + "");
+            param.put("ein", curr + 29 + "");
+            param.put("jsonpCallback", "getPlaylist");
+            param.put("categoryId",categoryId+"");
+            String result = Requests.get(url).headers(initHeader()).params(param).send().readToText();
+            //  System.out.println(result);
+            result = result.replace("getPlaylist(", "").replace(")", "");
+            JSONObject jsonObject = JSONObject.parseObject(result);
+            JSONArray list = jsonObject.getJSONObject("data").getJSONArray("list");
+            if(list.isEmpty()){
+                throw new FailedCrawlResultException();
+            }
+            for (int i = 0; i < list.size(); i++) {
+                JSONObject object = list.getJSONObject(i);
+                PlayList playList = new PlayList();
+                playList.setId(object.getString("dissid"));
+                playList.setImgUrl(object.getString("imgurl"));
+                playList.setTitle(object.getString("dissname"));
+                playList.setUrl(BASE_URL + object.getString("dissid") + ".html");
+                playList.setCount(object.getString("listennum"));
+                playList.setPlatformCode(3);
+                playList.setType(type);
+                lists.add(playList);
+            }
+            resultMap.put("playList", lists);
+            resultMap.put("nextUrl", ++curr);
+            return resultMap;
+        }catch (Exception e){
+            throw new FailedCrawlResultException("为抓取到数据");
         }
-        resultMap.put("playList",lists);
-        resultMap.put("nextUrl",++curr);
-        return resultMap;
     }
 
     public List<Song> getSongs(String url){

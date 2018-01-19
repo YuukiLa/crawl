@@ -16,7 +16,7 @@ public abstract class DefaultCrawl implements ICrawl {
             String result = Requests.get(url).send().readToText();
             return result;
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             return null;
         }
     }

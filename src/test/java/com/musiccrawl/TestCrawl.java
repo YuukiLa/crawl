@@ -7,6 +7,7 @@ import com.musiccrawl.crawl.wangyiyun.WangyiyunCrawl;
 import com.musiccrawl.crawl.xiami.XiamiCrawl;
 import com.musiccrawl.entity.PlayList;
 import com.musiccrawl.entity.Song;
+import com.musiccrawl.myexception.FailedCrawlResultException;
 import com.musiccrawl.util.WYYEncryptUtil;
 import com.musiccrawl.util.XiamiDecodeUtil;
 import net.dongliu.requests.Requests;
@@ -108,7 +109,8 @@ public class TestCrawl {
     public void testXMPlayListGet() {
         String url = "http://www.xiami.com/search/orinew?spm=a1z1s.3061701.6856305.6.9M9LaS&order=favorites&l=0";
         XiamiCrawl xm = new XiamiCrawl();
-//        xm.getPlayList(url).forEach(playList -> System.out.println(playList));
+        List<PlayList> playlist = (List<PlayList>) xm.getPlayList(url).get("playList");
+        playlist.forEach(playList -> System.out.println(playList));
 
     }
     // 虾米音乐歌单内容爬取
@@ -137,8 +139,13 @@ public class TestCrawl {
     public void TestQQmusicPlayList() {
         String url = "https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg";
         QQCrawl qq = new QQCrawl();
-        List list = (List) qq.getPlayList(url, 0).get("playList");
-        list .forEach(playList -> System.out.println(playList));
+        try{
+            List list = (List) qq.getPlayList(ICrawl.QQ_PLAYLIST_BASEURL,8000,167, 2).get("playList");
+        }catch (FailedCrawlResultException e){
+            System.out.println("sssssssssssss");
+        }
+
+        //list .forEach(playList -> System.out.println(playList));
     }
 
 

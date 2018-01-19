@@ -16,12 +16,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
  * Created by Administrator on 2017/9/16.
  */
+@Component
 public class WangyiyunCrawl extends DefaultCrawl {
     // http herader msg
     private static Map<String, String> headers = new HashMap<>();
@@ -35,8 +37,12 @@ public class WangyiyunCrawl extends DefaultCrawl {
     }
     private static final String PLAYLISTURL = "http://music.163.com/weapi/v3/playlist/detail";
     private static final String SONGURL = "http://music.163.com/weapi/song/enhance/player/url?csrf_token=";
+
+    public Map<String,Object> getPlayList(String url){
+        return getPlayList(url,1);
+    }
     //获取歌单列表
-    public Map<String,Object> getPlayList(String url) {
+    public Map<String,Object> getPlayList(String url,int type) throws FailedCrawlResultException{
         Map<String,Object> resultMap = new HashMap<>();
         try {
             String result = getContentByUrl(url);
@@ -51,8 +57,11 @@ public class WangyiyunCrawl extends DefaultCrawl {
                 select = e.select(".u-cover a").first();
                 play.setTitle(select.attr("title"));
                 play.setUrl(select.absUrl("href"));
+                play.setId(select.attr("href").split("=")[1]);
                 select = e.select(".u-cover .bottom .nb").first();
                 play.setCount(select.text());
+                play.setPlatformCode(1);
+                play.setType(type);
                 list.add(play);
             }
             resultMap.put("playList",list);
@@ -62,7 +71,7 @@ public class WangyiyunCrawl extends DefaultCrawl {
             resultMap.put("nextUrl",nextUrl);
             return resultMap;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new FailedCrawlResultException("未抓取到数据");
         }
     }

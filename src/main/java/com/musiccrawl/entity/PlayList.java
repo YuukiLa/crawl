@@ -1,16 +1,58 @@
 package com.musiccrawl.entity;
 
+import javax.persistence.*;
+
 /**
  * 歌单实体
  * Created by Administrator on 2017/9/16.
  */
+@Entity
+@Table(name="t_playlist")
 public class PlayList {
 
-    private String id;     //id  目前还没有什么用
+    @Id
+    @GeneratedValue
+    private Integer mid;
+    @Column(unique = true,length = 20)
+    private String id;     //id
+    @Column(length = 60)
     private String title;  //    歌单标题
+    @Column(length = 150)
     private String imgUrl; //    歌单图片地址
+    @Column(length = 150)
     private String url;    //    歌单地址
+    @Column(length = 20)
     private String count;  //    歌单播放次数
+    private Integer platformCode; // 平台代码
+    private Integer type;   // 歌单风格
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public void setPlatformCode(Integer platformCode) {
+        this.platformCode = platformCode;
+    }
+
+    public int getPlatformCode() {
+        return platformCode;
+    }
+
+    public void setPlatformCode(int platformCode) {
+        this.platformCode = platformCode;
+    }
+
+    public Integer getMid() {
+        return mid;
+    }
+
+    public void setMid(Integer mid) {
+        this.mid = mid;
+    }
 
     public String getId() {
         return id;
@@ -55,11 +97,14 @@ public class PlayList {
     @Override
     public String toString() {
         return "PlayList{" +
-                "id=" + id +
+                "mid=" + mid +
+                ", id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", url='" + url + '\'' +
                 ", count='" + count + '\'' +
+                ", platformCode=" + platformCode +
+                ", type=" + type +
                 '}';
     }
 }
