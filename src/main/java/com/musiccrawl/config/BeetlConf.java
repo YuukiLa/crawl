@@ -15,7 +15,7 @@ import org.springframework.core.io.support.ResourcePatternUtils;
 
 import java.io.IOException;
 
-@Configuration
+//@Configuration
 public class BeetlConf {
     @Value("${beetl.templatesPath}") String templatesPath;//模板跟目录 ，比如 "templates"
     @Bean(name = "beetlConfig")

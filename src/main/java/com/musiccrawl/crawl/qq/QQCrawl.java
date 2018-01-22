@@ -27,6 +27,7 @@ public class QQCrawl extends DefaultCrawl{
 
     private final String BASE_URL = "https://y.qq.com/n/yqq/playlist/";
     private final String PLAY_LIST_URL = "https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg";
+    private final String LYRIC_URL = "http://i.y.qq.com/lyric/fcgi-bin/fcg_query_lyric.fcg";
     public Map<String ,Object> getPlayList(String url,int curr){
         return getPlayList(url,curr,10000000,3);
     }
@@ -89,8 +90,15 @@ public class QQCrawl extends DefaultCrawl{
         for(int i=0 ;i<list.size();i++){
             JSONObject object = list.getJSONObject(i);
             Song song = new Song();
+            song.setId(object.getString("songmid"));
             song.setName(object.getString("songname"));
-            song.setUrl(getSongUrl(object.getString("songmid")));
+//            song.setUrl(getSongUrl(object.getString("songmid")));
+            song.setUrl(String.format("http://ws.stream.qqmusic.qq.com/C100%s.m4a?fromtag=46",song.getId()));
+            song.setImgUrl(String.format("https://y.gtimg.cn/music/photo_new/T002R300x300M000%s.jpg?max_age=2592000",object.getString("albummid")));
+            song.setSinger(getSinger(object.getJSONArray("singer")));
+            param.put("songmid",song.getId());
+            String text = Requests.get(LYRIC_URL).headers(initHeader()).params(param).send().readToText();
+            System.out.println(text);
             songs.add(song);
         }
         return songs;
@@ -137,6 +145,15 @@ public class QQCrawl extends DefaultCrawl{
         param.put("needNewCode","0");
         param.put("categoryId","10000000");
         return param;
+    }
+    private String getSinger(JSONArray array){
+        StringBuilder singer = new StringBuilder();
+        for(int i =0;i<array.size();i++){
+            JSONObject object = array.getJSONObject(i);
+            singer.append(object.getString("name"));
+            singer.append("/");
+        }
+        return singer.deleteCharAt(singer.length()-1).toString();
     }
 
 }

@@ -61,7 +61,11 @@ public class CommonAPIServiceImpl implements CommonAPIService {
                 songList.put("songs",new WangyiyunCrawl().getSongList(url));
                 break;
             case XM_CODE:
-                songList.put("songs",new XiamiCrawl().getSongs(url));
+                try {
+                    songList.put("songs",new XiamiCrawl().getSongs(url));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 break;
             case QQ_CODE:
                 songList.put("songs",new QQCrawl().getSongs(url));

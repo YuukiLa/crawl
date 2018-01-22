@@ -1,6 +1,8 @@
 package com.musiccrawl.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
@@ -11,12 +13,45 @@ import javax.persistence.Id;
 public class Song {
 
     @Id
+    @GeneratedValue
+    private Integer mid;
+    @Column(unique = true,length = 40)
     private String id;     // 歌曲id  mid什么的
+    @Column(length = 50)
     private String name;  // 歌曲名称
+    @Column(length = 150)
     private String url;   // 歌曲链接
+    @Column(length = 150)
     private String imgUrl;  // 图片地址 如果有的话
-    private String lrcUrl;  // 歌词地址 如果有的话
+    private String lrcText;  // 歌词地址 如果有的话
+    @Column(length = 50)
     private String singer; // 歌手
+    private Integer plantformCode; // 平台编号
+    private Integer type;   // 类型
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getPlantformCode() {
+        return plantformCode;
+    }
+
+    public void setPlantformCode(Integer plantformCode) {
+        this.plantformCode = plantformCode;
+    }
+
+    public Integer getMid() {
+        return mid;
+    }
+
+    public void setMid(Integer mid) {
+        this.mid = mid;
+    }
 
     public String getSinger() {
         return singer;
@@ -58,22 +93,26 @@ public class Song {
         this.imgUrl = imgUrl;
     }
 
-    public String getLrcUrl() {
-        return lrcUrl;
+    public String getLrcText() {
+        return lrcText;
     }
 
-    public void setLrcUrl(String lrcUrl) {
-        this.lrcUrl = lrcUrl;
+    public void setLrcText(String lrcText) {
+        this.lrcText = lrcText;
     }
 
     @Override
     public String toString() {
         return "Song{" +
-                "id=" + id +
+                "mid=" + mid +
+                ", id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
-                ", lrcUrl='" + lrcUrl + '\'' +
+                ", lrcText='" + lrcText + '\'' +
+                ", singer='" + singer + '\'' +
+                ", plantformCode=" + plantformCode +
+                ", type=" + type +
                 '}';
     }
 }

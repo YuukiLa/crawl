@@ -27,6 +27,9 @@ import java.util.*;
 public class WangyiyunCrawl extends DefaultCrawl {
     // http herader msg
     private static Map<String, String> headers = new HashMap<>();
+    private static final String PLAYLISTURL = "http://music.163.com/weapi/v3/playlist/detail";
+    private static final String SONGURL = "http://music.163.com/weapi/song/enhance/player/url?csrf_token=";
+    private static final String LYRICURL = "http://music.163.com/weapi/song/lyric?csrf_token=";
 
     static {
         headers.put("Referer", "http://music.163.com");
@@ -35,8 +38,7 @@ public class WangyiyunCrawl extends DefaultCrawl {
         headers.put("Content-Type", "application/x-www-form-urlencoded");
         // headers.put("Host","http://music.163.com");
     }
-    private static final String PLAYLISTURL = "http://music.163.com/weapi/v3/playlist/detail";
-    private static final String SONGURL = "http://music.163.com/weapi/song/enhance/player/url?csrf_token=";
+
 
     public Map<String,Object> getPlayList(String url){
         return getPlayList(url,1);
@@ -76,8 +78,12 @@ public class WangyiyunCrawl extends DefaultCrawl {
         }
     }
 
-    // 获取歌单里的所有歌曲列表
+
     public List<Song> getSongList(String url){
+        return getSongList(url,1);
+    }
+    // 获取歌单里的所有歌曲列表
+    public List<Song> getSongList(String url,int type){
         List<Song> songs = new ArrayList<>();
         try {
             String id = url.split("=")[1];
@@ -95,6 +101,10 @@ public class WangyiyunCrawl extends DefaultCrawl {
                 s.setName(song.getString("name"));
                 s.setImgUrl(song.getJSONObject("al").getString("picUrl"));
                 s.setUrl(getSongUrl(s.getId()));
+                s.setLrcText(getLyric(s.getId()));
+                s.setSinger(getSinger(song.getJSONArray("ar")));
+                s.setPlantformCode(1);
+                s.setType(type);
                 songs.add(s);
             }
         }catch (Exception e){
@@ -104,8 +114,19 @@ public class WangyiyunCrawl extends DefaultCrawl {
 
         return songs;
     }
+    private String getLyric(String id){
+        String data = "{\"id\":" + id + ",\"lv\":-1,\"tv\":-1,\"csrf_token\":\"\"}";
+        Map<String, String> forms = WYYEncryptUtil.encrypt(data);
+        String text = Requests.post(LYRICURL).headers(headers).forms(forms).send().readToText();
+        System.out.println(text);
+        JSONObject object = JSONObject.parseObject(text);
+        if(object!=null){
+            return object.getJSONObject("lrc").getString("lyric");
+        }
+        return "";
+    }
     private String getSongUrl(String id){
-        String data = "{\"ids\":" + Arrays.asList(id) + ",\"br\":320000,\"csrf_token\":\"\"}";
+        String data = "{\"id\":" + Arrays.asList(id) + ",\"br\":320000,\"csrf_token\":\"\"}";
         Map<String, String> forms = WYYEncryptUtil.encrypt(data);
         String text = Requests.post(SONGURL).headers(headers).forms(forms).send().readToText();
         JSONArray array = JSONObject.parseObject(text).getJSONArray("data");
@@ -113,5 +134,14 @@ public class WangyiyunCrawl extends DefaultCrawl {
             return array.getJSONObject(0).getString("url");
         }
         return "";
+    }
+    private String getSinger(JSONArray array){
+        StringBuilder singer = new StringBuilder();
+        for(int i =0;i<array.size();i++){
+            JSONObject object = array.getJSONObject(i);
+            singer.append(object.getString("name"));
+            singer.append("/");
+        }
+        return singer.deleteCharAt(singer.length()-1).toString();
     }
 }

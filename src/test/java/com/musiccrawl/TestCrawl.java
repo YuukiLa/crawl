@@ -1,6 +1,7 @@
 package com.musiccrawl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.musiccrawl.crawl.DefaultCrawl;
 import com.musiccrawl.crawl.interfacies.ICrawl;
 import com.musiccrawl.crawl.qq.QQCrawl;
 import com.musiccrawl.crawl.wangyiyun.WangyiyunCrawl;
@@ -72,7 +73,11 @@ public class TestCrawl {
 //        System.out.println(text);
 
     }
-
+    @Test
+    public void testGetNestLyric(){
+//        String lyric = new WangyiyunCrawl().getLyric("509781260");
+//        System.out.println(lyric);
+    }
 
 
 
@@ -116,12 +121,50 @@ public class TestCrawl {
     // 虾米音乐歌单内容爬取
     @Test
     public void testXMplayListContent() throws Exception {
-        String url = "http://www.xiami.com/collect/178571247";
+//        String url = "http://www.xiami.com/collect/359585115";
         XiamiCrawl xm = new XiamiCrawl();
-        List<Song> songs = xm.getSongs(url);
+        List<Song> songs = xm.getSongs("356505475", 2);
+//        List<Song> songs = xm.getSongs(url);
         songs.stream().forEach(song -> System.out.println(song));
        // xm.getSongMsg("http://www.xiami.com/song/mQ7nE683e2f");
     }
+    @Test
+    public void testXMinfo() throws Exception {
+        Map<String ,Object > header = new HashMap<>();
+        header.put("Host","api.xiami.com");
+        header.put("Origin","http://m.xiami.com/");
+        header.put("Referer","http://m.xiami.com/");
+        header.put("Upgrade-Insecure-Requests","1");
+        header.put("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
+        header.put("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+        header.put("Accept-Encoding","gzip, deflate");
+        header.put("Accept-Language","zh-CN,zh;q=0.9");
+        header.put("Cache-Control","max-age=0");
+        header.put("Connection","keep-alive");
+
+        String url = "http://api.xiami.com/web?v=2.0&app_key=1&id=362468180&callback=jsonp122&r=collect/detail";
+
+        Map<String ,Object > cookie = new HashMap<>();
+        cookie.put("gid","15102075309988");
+        cookie.put("_unsign_token","76ef702191632b91563378b21378ebc7");
+        cookie.put("bdshare_firstime","1514961226048");
+        cookie.put("cna","");
+        cookie.put("_m_h5_tk","0c28e97a6662c95b302b0a3fb94177a7_1516102596366");
+        cookie.put("_m_h5_tk_enc","b7ef470c217187b93f49e1221b0ec347");
+        cookie.put("login_method","sinalogin");
+        cookie.put("recent_tags","%E5%8D%8E%E8%AF%AD+%E9%9F%A9%E8%AF%AD+%E6%80%80%E6%97%A7+%E7%BB%8F%E5%85%B8+");
+        cookie.put("_xiamitoken","70aa2b9ebc293f1912a0410d446793a5");
+        cookie.put("user_from",1);
+        cookie.put("t_sign_auth",1);
+        cookie.put("XMPLAYER_url","/song/playlist/id/362475036/type/3");
+        cookie.put("XMPLAYER_addSongsToggler",0);
+        cookie.put("__guestplay","MTgwMTM3NTk5NCwxOzE3NzA0MTc2MzYsMjsxNzcwNzQ3OTQ5LDI7MTc2OTkzMzcwNywzOzE3Njk5MTU3NDMsMzsxNzk2OTA5OTE1LDE7MTc3NjMwMzg3NiwyOzE3NzQ1NjQwNTQsMjsxNzkyNjEwMzM1LDI7MzczOTY1LDI7MTc3MDY4NTczMiwx");
+        cookie.put("XMPLAYER_isOpen",0);
+        cookie.put("isg","Av7-BdXFKMwfcXzQD-KUtNqkTxSAl8KXaDIBWqgHasE8S54lEM8SySQptSF8");
+        String s = Requests.get("http://img.xiami.net/lyric/61/1771070161_1472632864_7747.lrc").send().readToText();
+        System.out.println(s);
+    }
+
 
     // 以下是QQ音乐的测试
     @Test
@@ -140,7 +183,7 @@ public class TestCrawl {
         String url = "https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg";
         QQCrawl qq = new QQCrawl();
         try{
-            List list = (List) qq.getPlayList(ICrawl.QQ_PLAYLIST_BASEURL,8000,167, 2).get("playList");
+            List list = (List) qq.getPlayList(ICrawl.QQ_PLAYLIST_BASEURL,1,167, 2).get("playList");
         }catch (FailedCrawlResultException e){
             System.out.println("sssssssssssss");
         }
@@ -153,6 +196,7 @@ public class TestCrawl {
     public void testQQplayListContnet(){
         String url = "https://y.qq.com/n/yqq/playlist/3607386766.html";
         QQCrawl qq = new QQCrawl();
-        qq.getSongs(url);
+        List<Song> songs = qq.getSongs(url);
+        songs.forEach(song -> System.out.println(song));
     }
 }
