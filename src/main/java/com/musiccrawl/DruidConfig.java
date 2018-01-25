@@ -1,17 +1,14 @@
-package com.musiccrawl.config;
+package com.musiccrawl;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -69,29 +66,32 @@ public class DruidConfig {
 
     @Value("${spring.datasource.logSlowSql}")
     private String logSlowSql;
+    @Value("${spring.datasource.connectionProperties}")
+    private String connectionProperties;
+
+//    @Bean
+//    public ServletRegistrationBean druidServlet() {
+//        ServletRegistrationBean reg = new ServletRegistrationBean();
+//        reg.setServlet(new StatViewServlet());
+//        reg.addUrlMappings("/druid/*");
+//        reg.addInitParameter("loginUsername", username);
+//        reg.addInitParameter("loginPassword", password);
+//        reg.addInitParameter("logSlowSql", logSlowSql);
+//        return reg;
+//    }
+//
+//    @Bean
+//    public FilterRegistrationBean filterRegistrationBean() {
+//        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+//        filterRegistrationBean.setFilter(new WebStatFilter());
+//        filterRegistrationBean.addUrlPatterns("/*");
+//        filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
+//        filterRegistrationBean.addInitParameter("profileEnable", "true");
+//        return filterRegistrationBean;
+//    }
 
     @Bean
-    public ServletRegistrationBean druidServlet() {
-        ServletRegistrationBean reg = new ServletRegistrationBean();
-        reg.setServlet(new StatViewServlet());
-        reg.addUrlMappings("/druid/*");
-        reg.addInitParameter("loginUsername", username);
-        reg.addInitParameter("loginPassword", password);
-        reg.addInitParameter("logSlowSql", logSlowSql);
-        return reg;
-    }
-
-    @Bean
-    public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-        filterRegistrationBean.setFilter(new WebStatFilter());
-        filterRegistrationBean.addUrlPatterns("/*");
-        filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
-        filterRegistrationBean.addInitParameter("profileEnable", "true");
-        return filterRegistrationBean;
-    }
-
-    @Bean
+    @Primary
     public DataSource druidDataSource() {
         DruidDataSource datasource = new DruidDataSource();
         datasource.setUrl(dbUrl);
@@ -108,7 +108,12 @@ public class DruidConfig {
         datasource.setTestWhileIdle(testWhileIdle);
         datasource.setTestOnBorrow(testOnBorrow);
         datasource.setTestOnReturn(testOnReturn);
-
+        try {
+            datasource.setFilters(filters);
+        } catch (SQLException e) {
+            System.err.println("druid configuration initialization filter: "+ e);
+        }
+        datasource.setConnectionProperties(connectionProperties);
         return datasource;
     }
 }

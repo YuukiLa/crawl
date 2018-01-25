@@ -66,42 +66,62 @@ public class QQCrawl extends DefaultCrawl{
             resultMap.put("nextUrl", ++curr);
             return resultMap;
         }catch (Exception e){
-            throw new FailedCrawlResultException("为抓取到数据");
+            throw new FailedCrawlResultException("未抓取到数据");
         }
     }
-
     public List<Song> getSongs(String url){
+        return getSongs(url,1);
+    }
+    public List<Song> getSongs(String url,int type){
         List<Song> songs = new ArrayList<>();
-        Map<String, String> param = initParam();
-        String s = url.split("playlist/")[1];
-        s = s.split(".ht")[0];
-        System.out.println(s);
-        param.put("disstid",s);
-        param.put("onlysong","1");
-        param.put("jsonpCallback","playlistinfoCallback");
-        param.put("onlysong","0");
-        param.put("type","1");
-        param.put("json","1");
-        param.put("utf8","1");
-        String result = Requests.get(PLAY_LIST_URL).headers(initHeader()).params(param).send().readToText();
-        result = result.replace("playlistinfoCallback(","").replace(")","");
-        JSONObject jsonObject = JSONObject.parseObject(result);
-        JSONArray list = jsonObject.getJSONArray("cdlist").getJSONObject(0).getJSONArray("songlist");
-        for(int i=0 ;i<list.size();i++){
-            JSONObject object = list.getJSONObject(i);
-            Song song = new Song();
-            song.setId(object.getString("songmid"));
-            song.setName(object.getString("songname"));
+        try {
+
+
+            Map<String, String> param = initParam();
+            String s = url.split("playlist/")[1];
+            s = s.split(".ht")[0];
+            param.put("disstid", s);
+            param.put("onlysong", "1");
+            param.put("jsonpCallback", "playlistinfoCallback");
+            param.put("onlysong", "0");
+            param.put("type", "1");
+            param.put("json", "1");
+            param.put("utf8", "1");
+            String result = Requests.get(PLAY_LIST_URL).headers(initHeader()).params(param).send().readToText();
+            result = result.replace("playlistinfoCallback(", "").replace(")", "");
+            JSONObject jsonObject = JSONObject.parseObject(result);
+            JSONArray list = jsonObject.getJSONArray("cdlist").getJSONObject(0).getJSONArray("songlist");
+            for (int i = 0; i < list.size(); i++) {
+                JSONObject object = list.getJSONObject(i);
+                Song song = new Song();
+                song.setId(object.getString("songmid"));
+                song.setName(object.getString("songname"));
 //            song.setUrl(getSongUrl(object.getString("songmid")));
-            song.setUrl(String.format("http://ws.stream.qqmusic.qq.com/C100%s.m4a?fromtag=46",song.getId()));
-            song.setImgUrl(String.format("https://y.gtimg.cn/music/photo_new/T002R300x300M000%s.jpg?max_age=2592000",object.getString("albummid")));
-            song.setSinger(getSinger(object.getJSONArray("singer")));
-            param.put("songmid",song.getId());
-            String text = Requests.get(LYRIC_URL).headers(initHeader()).params(param).send().readToText();
-            System.out.println(text);
-            songs.add(song);
+                song.setUrl(String.format("http://ws.stream.qqmusic.qq.com/C100%s.m4a?fromtag=46", song.getId()));
+                song.setImgUrl(String.format("https://y.gtimg.cn/music/photo_new/T002R300x300M000%s.jpg?max_age=2592000", object.getString("albummid")));
+                song.setSinger(getSinger(object.getJSONArray("singer")));
+                song.setLrcText(getLyric(object.getString("songid")));
+                song.setPlantformCode(3);
+                song.setType(type);
+                songs.add(song);
+            }
+        }catch (Exception e){
+
         }
         return songs;
+    }
+    // 获取歌词
+    private String getLyric(String id){
+        Map<String,String > param = initParam();
+        param.put("musicid",id);
+        param.put("jsonpCallback","jsonp1");
+        param.put("nobase64","1");
+        param.put("g_tk","5381");
+        String text = Requests.get(LYRIC_URL).headers(initHeader()).params(param).send().readToText();
+        text = text.replace("jsonp1(","");
+        text = text.substring(0,text.length()-1);
+        JSONObject object = JSONObject.parseObject(text);
+        return object.getString("lyric");
     }
 
     // 获取歌曲链接

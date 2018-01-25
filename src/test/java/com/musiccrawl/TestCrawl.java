@@ -58,7 +58,8 @@ public class TestCrawl {
     @Test
     public void testGetWYYAllSong() throws Exception {
         WangyiyunCrawl crawl = new WangyiyunCrawl();
-        List<Song> songList = crawl.getSongList("http://music.163.com/#/playlist?id=996670184");
+        List<Song> songList = crawl.getSongList("http://music.163.com/playlist?id=988454757");
+        System.out.println(songList.size()+"aaaaaaaaaaaaaaa");
         songList.stream().forEach(song -> System.out.println(song));
 //        Jsoup.connect("http://music.163.com/playlist?id=996670184")
 //                .header("Referer", "http://music.163.com/")
@@ -79,7 +80,10 @@ public class TestCrawl {
 //        System.out.println(lyric);
     }
 
-
+    @Test
+    public void testSearchWYY(){
+        new WangyiyunCrawl().serachSong("枫");
+    }
 
 
 
@@ -90,12 +94,12 @@ public class TestCrawl {
 //        Map<String, String> forms = WYYEncryptUtil.encrypt(data);
 //        String url = "http://music.163.com/weapi/cloudsearch/get/web";
 
-        String data = "{\"ids\":" + Arrays.asList("455345541") + ",\"br\":320000,\"csrf_token\":\"\"}";
-        Map<String, String> forms = WYYEncryptUtil.encrypt(data);
-        System.out.println(forms.values());
-        String url = "http://music.163.com/weapi/song/enhance/player/url?csrf_token=";
-        String text = Requests.post(url).headers(headers).forms(forms).send().readToText();
-        System.out.println(text);
+//        String data = "{\"ids\":" + Arrays.asList("504624714") + ",\"br\":320000,\"csrf_token\":\"\"}";
+//        Map<String, String> forms = WYYEncryptUtil.encrypt(data);
+//        String url = "http://music.163.com/weapi/song/enhance/player/url?csrf_token=";
+//        String text = Requests.post(url).headers(headers).forms(forms).send().readToText();
+//        System.out.println(text);
+            new WangyiyunCrawl().getSongUrl("504624714");
 //        PlayListResponse playListResponse = JSON.parseObject(text, PlayListResponse.class);
 //        System.out.println(text);
     }
@@ -198,5 +202,10 @@ public class TestCrawl {
         QQCrawl qq = new QQCrawl();
         List<Song> songs = qq.getSongs(url);
         songs.forEach(song -> System.out.println(song));
+    }
+
+    @Test
+    public void testGetLyric(){
+        //new QQCrawl().getLyric("201385986");
     }
 }

@@ -70,7 +70,7 @@ public class XiamiCrawl extends DefaultCrawl{
     }
     private static final String SONG_MSG_URL="http://api.xiami.com/web?v=2.0&app_key=1&id=%s&callback=jsonp122&r=collect/detail";
     private static final String SONG_DETIL = "http://www.xiami.com/song/playlist/id/%s/object_name/default/object_id/0/cat/json";
-    public List<Song> getSongs(String id,int type) throws InterruptedException {
+    public List<Song> getSongs(String id,int type){
         List<Song> songs = new ArrayList<>();
 //        try {
 //            String result = getContentByUrl(url);
@@ -101,30 +101,34 @@ public class XiamiCrawl extends DefaultCrawl{
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        String result = Requests.get(String.format(SONG_MSG_URL,id)).headers(getHeader()).cookies(getCookie()).send().readToText();
-        result = result.replace("jsonp122(","");
-        result = result.substring(0,result.length()-1);
-        JSONObject object = JSONObject.parseObject(result);
-        System.out.println(object.getString("request_id"));
-        JSONArray array = object.getJSONObject("data").getJSONArray("songs");
-        for (int i = 0; i < array.size(); i++) {
-            JSONObject obj = array.getJSONObject(i);
-            Song song = new Song();
-            song.setId(obj.getInteger("song_id")+"");
-            song.setName(obj.getString("song_name"));
-            song.setImgUrl(obj.getString("album_logo"));
-            song.setSinger(obj.getString("singers"));
-            Map header = getHeader();
-            header.put("Host","www.xiami.com");
-            String s = Requests.get(String.format(SONG_DETIL, song.getId())).headers(header).cookies(getCookie()).send().readToText();
-            JSONObject o = JSONObject.parseObject(s);
-            String lyric = o.getJSONObject("data").getJSONArray("trackList").getJSONObject(0).getString("lyric_url");
-            if(!lyric.equals("")){
-                song.setLrcText(Requests.get(lyric).send().readToText());
+        try {
+            String result = Requests.get(String.format(SONG_MSG_URL, id)).headers(getHeader()).cookies(getCookie()).send().readToText();
+            result = result.replace("jsonp122(", "");
+            result = result.substring(0, result.length() - 1);
+            JSONObject object = JSONObject.parseObject(result);
+            JSONArray array = object.getJSONObject("data").getJSONArray("songs");
+            for (int i = 0; i < array.size(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                Song song = new Song();
+                song.setId(obj.getInteger("song_id") + "");
+                song.setName(obj.getString("song_name"));
+                song.setImgUrl(obj.getString("album_logo"));
+                song.setSinger(obj.getString("singers"));
+                Map header = getHeader();
+                header.put("Host", "www.xiami.com");
+                String s = Requests.get(String.format(SONG_DETIL, song.getId())).headers(header).cookies(getCookie()).send().readToText();
+                JSONObject o = JSONObject.parseObject(s);
+                String lyric = o.getJSONObject("data").getJSONArray("trackList").getJSONObject(0).getString("lyric_url");
+                if (!lyric.equals("")) {
+                    song.setLrcText(Requests.get(lyric).send().readToText());
+                }
+                song.setPlantformCode(2);
+                song.setType(type);
+                song.setUrl(obj.getString("listen_file"));
+                songs.add(song);
             }
-            song.setPlantformCode(2);
-            song.setUrl(obj.getString("listen_file"));
-            songs.add(song);
+        }catch (Exception e){
+
         }
         return songs;
     }

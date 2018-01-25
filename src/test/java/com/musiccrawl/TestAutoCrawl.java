@@ -4,30 +4,59 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.musiccrawl.crawl.AutoCrawl;
 import com.musiccrawl.crawl.enums.TypeEnum;
+import com.musiccrawl.entity.Song;
+import com.musiccrawl.repository.SongRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 
 @RunWith(SpringRunner.class) // SpringJUnit支持，由此引入Spring-Test框架支持！
 @SpringBootTest()
+@Rollback(false)
 public class TestAutoCrawl {
     @Autowired
     private AutoCrawl autoCrawl;
+    @Autowired
+    private SongRepository songRepository;
     @Test
     public void sampleTest() throws UnsupportedEncodingException {
         autoCrawl.starCrawl();
     }
     @Test
+    public void TestCrawlAllMusic(){
+        autoCrawl.starCrawlMusic();
+    }
+
+    @Test
     public void enumTest(){
         System.out.println(TypeEnum.getEnum(2).getName());
     }
+
+    @Test
+    public void sqlTest(){
+//        Song song = songRepository.findOne(1);
+//        song.setId("1");
+//        song.setMid(0);
+        Song song  = new Song();
+        song.setId("1");
+        song.setName("name");
+        songRepository.saveOne(song.getId(),song.getName(),song.getUrl(),song.getImgUrl(),song.getLrcText(),song.getSinger(),song.getPlantformCode(),song.getType());
+    }
+
+
+
+
+
+
 
     @Test
     public void qqSpult(){

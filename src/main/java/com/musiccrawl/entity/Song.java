@@ -1,15 +1,13 @@
 package com.musiccrawl.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * 歌曲实体
  * Created by Administrator on 2017/12/3.
  */
 @Entity
+@Table(name="t_song")
 public class Song {
 
     @Id
@@ -23,7 +21,8 @@ public class Song {
     private String url;   // 歌曲链接
     @Column(length = 150)
     private String imgUrl;  // 图片地址 如果有的话
-    private String lrcText;  // 歌词地址 如果有的话
+    @Column(columnDefinition = "TEXT")
+    private String lrcText;  // 歌词 如果有的话
     @Column(length = 50)
     private String singer; // 歌手
     private Integer plantformCode; // 平台编号

@@ -30,6 +30,7 @@ public class WangyiyunCrawl extends DefaultCrawl {
     private static final String PLAYLISTURL = "http://music.163.com/weapi/v3/playlist/detail";
     private static final String SONGURL = "http://music.163.com/weapi/song/enhance/player/url?csrf_token=";
     private static final String LYRICURL = "http://music.163.com/weapi/song/lyric?csrf_token=";
+    private static final String SEARCHURL= "http://music.163.com/api/search/pc";
 
     static {
         headers.put("Referer", "http://music.163.com");
@@ -90,7 +91,6 @@ public class WangyiyunCrawl extends DefaultCrawl {
             String data = "{\"id\":\""+id+"\",\"offset\":0,\"total\":true,\"limit\":1000,\"n\":1000,\"csrf_token\":\"\"}";
             Map<String, String> forms = WYYEncryptUtil.encrypt(data);
             String text = Requests.post(PLAYLISTURL).headers(headers).forms(forms).send().readToText();
-
             JSONObject obj = JSONObject.parseObject(text);
             JSONArray tracks = obj.getJSONObject("playlist").getJSONArray("tracks");
             //System.out.println(tracks.size());
@@ -114,19 +114,38 @@ public class WangyiyunCrawl extends DefaultCrawl {
 
         return songs;
     }
+    // 搜索
+    public List<Song> serachSong(String songName){
+        List<Song> songs = new ArrayList<>();
+        Map<String,Object> forms = new HashMap<>();
+        forms.put("s",songName);
+        forms.put("offset",0);
+        forms.put("limit",20);
+        forms.put("type",1);
+//        Map<String, String> forms = WYYEncryptUtil.encrypt(req_data);
+        String result = Requests.post(SEARCHURL).headers(headers).params(forms).send().readToText();
+        System.out.println(result);
+        return songs;
+    }
+
+
+
+
+
     private String getLyric(String id){
         String data = "{\"id\":" + id + ",\"lv\":-1,\"tv\":-1,\"csrf_token\":\"\"}";
         Map<String, String> forms = WYYEncryptUtil.encrypt(data);
         String text = Requests.post(LYRICURL).headers(headers).forms(forms).send().readToText();
-        System.out.println(text);
         JSONObject object = JSONObject.parseObject(text);
-        if(object!=null){
-            return object.getJSONObject("lrc").getString("lyric");
+        try {
+            String lyric = object.getJSONObject("lrc").getString("lyric");
+            return lyric;
+        }catch (NullPointerException e){
+            return "";
         }
-        return "";
     }
-    private String getSongUrl(String id){
-        String data = "{\"id\":" + Arrays.asList(id) + ",\"br\":320000,\"csrf_token\":\"\"}";
+    public String getSongUrl(String id){
+        String data = "{\"ids\":" + Arrays.asList(id) + ",\"br\":320000,\"csrf_token\":\"\"}";
         Map<String, String> forms = WYYEncryptUtil.encrypt(data);
         String text = Requests.post(SONGURL).headers(headers).forms(forms).send().readToText();
         JSONArray array = JSONObject.parseObject(text).getJSONArray("data");
