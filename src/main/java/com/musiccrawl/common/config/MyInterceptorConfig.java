@@ -1,6 +1,6 @@
-package com.musiccrawl.config;
+package com.musiccrawl.common.config;
 
-import com.musiccrawl.myinterceptor.ResonseHeaderInterceptor;
+import com.musiccrawl.common.myinterceptor.ResonseHeaderInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;

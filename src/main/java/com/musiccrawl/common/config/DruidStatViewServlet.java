@@ -1,4 +1,4 @@
-package com.musiccrawl.config;
+package com.musiccrawl.common.config;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 

@@ -1,24 +1,21 @@
 package com.musiccrawl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.musiccrawl.crawl.DefaultCrawl;
 import com.musiccrawl.crawl.interfacies.ICrawl;
 import com.musiccrawl.crawl.qq.QQCrawl;
 import com.musiccrawl.crawl.wangyiyun.WangyiyunCrawl;
 import com.musiccrawl.crawl.xiami.XiamiCrawl;
-import com.musiccrawl.entity.PlayList;
-import com.musiccrawl.entity.Song;
-import com.musiccrawl.myexception.FailedCrawlResultException;
-import com.musiccrawl.util.WYYEncryptUtil;
+import com.musiccrawl.common.entity.PlayList;
+import com.musiccrawl.common.entity.Song;
+import com.musiccrawl.common.myexception.FailedCrawlResultException;
 import com.musiccrawl.util.XiamiDecodeUtil;
 import net.dongliu.requests.Requests;
 import org.junit.Test;
 
 import java.net.URLDecoder;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Administrator on 2017/9/16.
@@ -207,5 +204,15 @@ public class TestCrawl {
     @Test
     public void testGetLyric(){
         //new QQCrawl().getLyric("201385986");
+    }
+
+    // 一些无聊的测试
+    @Test
+    public void testRandom(){
+        for (int i = 0; i <20 ; i++) {
+            int j = new Random().nextInt(52000);
+            System.out.println(j);
+        }
+
     }
 }

@@ -6,9 +6,7 @@ import org.beetl.ext.spring.BeetlSpringViewResolver;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -16,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 //@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
-@EnableJpaRepositories("com.musiccrawl.repository")
+@EnableJpaRepositories("com.musiccrawl.common.repository")
 @EnableTransactionManagement
 @ServletComponentScan
 public class CrawlApplication {

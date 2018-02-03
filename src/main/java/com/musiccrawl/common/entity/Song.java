@@ -1,4 +1,4 @@
-package com.musiccrawl.entity;
+package com.musiccrawl.common.entity;
 
 import javax.persistence.*;
 

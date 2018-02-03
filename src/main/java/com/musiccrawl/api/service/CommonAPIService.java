@@ -1,6 +1,7 @@
-package com.musiccrawl.service;
+package com.musiccrawl.api.service;
 
-import com.musiccrawl.entity.PlayList;
+import com.musiccrawl.common.entity.PlayList;
+import com.musiccrawl.common.entity.Song;
 
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,8 @@ public interface CommonAPIService {
     final int QQ_CODE = 3;
 
     //
-    Map<String,Object> getPlayList(int code,String nextUrl);
-    // 获取所有的歌单
-    List<PlayList>  getAllPlayList();
+    Map<String,Object> getPlayList(int next);
 
-    Map<String,Object> getSongList(int code ,String url);
+
+    List<Song> getSongList(String url);
 }

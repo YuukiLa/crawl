@@ -1,4 +1,4 @@
-package com.musiccrawl.model;
+package com.musiccrawl.common.model;
 
 /**
  * 响应体

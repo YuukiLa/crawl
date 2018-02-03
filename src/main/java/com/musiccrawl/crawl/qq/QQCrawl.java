@@ -3,21 +3,15 @@ package com.musiccrawl.crawl.qq;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.musiccrawl.crawl.DefaultCrawl;
-import com.musiccrawl.entity.PlayList;
-import com.musiccrawl.entity.Song;
-import com.musiccrawl.myexception.FailedCrawlResultException;
+import com.musiccrawl.common.entity.PlayList;
+import com.musiccrawl.common.entity.Song;
+import com.musiccrawl.common.myexception.FailedCrawlResultException;
 import net.dongliu.requests.Requests;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * QQ音乐歌单爬取

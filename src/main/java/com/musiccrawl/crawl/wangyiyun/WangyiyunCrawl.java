@@ -2,14 +2,10 @@ package com.musiccrawl.crawl.wangyiyun;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.musiccrawl.crawl.DefaultCrawl;
-import com.musiccrawl.entity.PlayList;
-import com.musiccrawl.entity.Song;
-import com.musiccrawl.myexception.FailedCrawlResultException;
+import com.musiccrawl.common.entity.PlayList;
+import com.musiccrawl.common.entity.Song;
+import com.musiccrawl.common.myexception.FailedCrawlResultException;
 import com.musiccrawl.util.WYYEncryptUtil;
 import net.dongliu.requests.Requests;
 import org.jsoup.Jsoup;

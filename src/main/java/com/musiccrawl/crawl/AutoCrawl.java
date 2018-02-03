@@ -6,16 +6,13 @@ import com.musiccrawl.crawl.interfacies.ICrawl;
 import com.musiccrawl.crawl.qq.QQCrawl;
 import com.musiccrawl.crawl.wangyiyun.WangyiyunCrawl;
 import com.musiccrawl.crawl.xiami.XiamiCrawl;
-import com.musiccrawl.entity.PlayList;
-import com.musiccrawl.entity.Song;
-import com.musiccrawl.myexception.FailedCrawlResultException;
-import com.musiccrawl.repository.PlayListRepository;
-import com.musiccrawl.repository.SongRepository;
+import com.musiccrawl.common.entity.PlayList;
+import com.musiccrawl.common.entity.Song;
+import com.musiccrawl.common.myexception.FailedCrawlResultException;
+import com.musiccrawl.common.repository.PlayListRepository;
+import com.musiccrawl.common.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -45,20 +42,22 @@ public class AutoCrawl {
     }
 
     private void runTask(List<Callable<String>> callables) {
-        System.out.println(callables.size());
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
         long startTime = System.currentTimeMillis();
-        try {
-            List<Future<String>> futures = executorService.invokeAll(callables);
-            executorService.shutdown();
-            for (Future<String> future : futures) {
+        List<Future<String>> futures = new ArrayList<>();
+        callables.stream().forEach(callable -> {
+            futures.add(executorService.submit(callable));
+        });
+        executorService.shutdown();
+        futures.forEach(future->{
+            try {
                 System.out.println(future.get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        });
         long endTime = System.currentTimeMillis();
         System.out.println("跑完了,用时:" + (endTime - startTime) / 60000 + "分钟");
     }
@@ -66,33 +65,35 @@ public class AutoCrawl {
     private List<Callable<String>> createMusicTask() {
         List<Callable<String>> callables = new ArrayList<>();
         long count = playListRepository.count();
-        int size = (int) (count / 20);
-        for (int i = 0; i < 21; i++) {
+        int size = (int) (count / 4);
+        for (int i = 0; i < 5; i++) {
             PageRequest pageRequest = new PageRequest(i, size);
             List<PlayList> playlists = playListRepository.findAll(pageRequest).getContent();
 //           System.out.println(playlists.size());
             callables.add(new Callable<String>() {
                 @Override
                 public String call() throws Exception {
+                    List<Song> songs = new ArrayList<>();
                     for(PlayList playList:playlists) {
 //                        System.out.println(playList.getTitle());
-                        List<Song> songs = null;
+
                         switch (playList.getPlatformCode()) {
                             case 1:
-                                songs = new WangyiyunCrawl().getSongList(playList.getUrl(), playList.getType());
+                                songs.addAll(new WangyiyunCrawl().getSongList(playList.getUrl(), playList.getType())) ;
                                 break;
                             case 2:
-                                songs = new XiamiCrawl().getSongs(playList.getId(), playList.getType());
+                                songs.addAll( new XiamiCrawl().getSongs(playList.getId(), playList.getType()));
                                 break;
                             case 3:
-                                songs = new QQCrawl().getSongs(playList.getUrl(), playList.getType());
+                                songs.addAll(new QQCrawl().getSongs(playList.getUrl(), playList.getType()));
                                 break;
                             default:
                                 break;
                         }
-                        if(songs!=null){
+                        if(songs.size()>1000){
                             for(Song song:songs)
                                 songRepository.saveOne(song.getId(),song.getName(),song.getUrl(),song.getImgUrl(),song.getLrcText(),song.getSinger(),song.getPlantformCode(),song.getType());
+                            songs.clear();
                         }
                     }
                     return "success";
@@ -110,7 +111,7 @@ public class AutoCrawl {
             callables.add(new Callable<String>() {
                 @Override
                 public String call() throws Exception {
-                    String nextUrl = ICrawl.WYY_PLAYLIST_BASEUTL + "?cat=" + URLEncoder.encode(typeEnum.getName(), "utf-8");
+                    String nextUrl = ICrawl.WYY_PLAYLIST_BASEURL + "?cat=" + URLEncoder.encode(typeEnum.getName(), "utf-8");
                     while (nextUrl != null) {
                         if (nextUrl.equals("")) {
                             System.out.println("end");

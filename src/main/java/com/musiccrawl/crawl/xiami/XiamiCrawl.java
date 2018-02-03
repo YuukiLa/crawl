@@ -3,20 +3,15 @@ package com.musiccrawl.crawl.xiami;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.musiccrawl.crawl.DefaultCrawl;
-import com.musiccrawl.entity.PlayList;
-import com.musiccrawl.entity.Song;
-import com.musiccrawl.myexception.FailedCrawlResultException;
-import com.musiccrawl.util.XiamiDecodeUtil;
+import com.musiccrawl.common.entity.PlayList;
+import com.musiccrawl.common.entity.Song;
+import com.musiccrawl.common.myexception.FailedCrawlResultException;
 import net.dongliu.requests.Requests;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Node;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +61,8 @@ public class XiamiCrawl extends DefaultCrawl{
     }
 
     public List<Song> getSongs(String url) throws InterruptedException {
-        return getSongs(url,1);
+        String id = url.split("collect/")[1];
+        return getSongs(id,1);
     }
     private static final String SONG_MSG_URL="http://api.xiami.com/web?v=2.0&app_key=1&id=%s&callback=jsonp122&r=collect/detail";
     private static final String SONG_DETIL = "http://www.xiami.com/song/playlist/id/%s/object_name/default/object_id/0/cat/json";
@@ -103,6 +99,7 @@ public class XiamiCrawl extends DefaultCrawl{
 //        }
         try {
             String result = Requests.get(String.format(SONG_MSG_URL, id)).headers(getHeader()).cookies(getCookie()).send().readToText();
+//            System.out.println(result);
             result = result.replace("jsonp122(", "");
             result = result.substring(0, result.length() - 1);
             JSONObject object = JSONObject.parseObject(result);

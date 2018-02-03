@@ -1,4 +1,4 @@
-package com.musiccrawl.myexception;
+package com.musiccrawl.common.myexception;
 
 /**
  * 抓取失败时抛出的异常

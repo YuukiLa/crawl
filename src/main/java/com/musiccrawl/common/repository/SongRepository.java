@@ -1,7 +1,6 @@
-package com.musiccrawl.repository;
+package com.musiccrawl.common.repository;
 
-import com.musiccrawl.entity.Song;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.musiccrawl.common.entity.Song;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

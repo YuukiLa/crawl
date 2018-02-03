@@ -1,4 +1,4 @@
-package com.musiccrawl.myinterceptor;
+package com.musiccrawl.common.myinterceptor;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
